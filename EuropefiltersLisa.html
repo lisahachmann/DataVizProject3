@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Social Media Data Charts</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+</head>
+<body>
+<script type="text/javascript">
+    d3.csv("EuropeanUnionfeelings.csv", function(data) {
+    console.log(data);
+    });
+
+    function computeSizes (svg) {
+
+    // get the size of the SVG element
+    var height = svg.attr("height");
+    var width = svg.attr("width");
+    var margin = 100;
+
+    // the chart lives in the svg surrounded by a margin of 100px
+
+    return {height:height,
+	    width: width,
+	    margin: margin,
+	    chartHeight: height-2*margin,
+	    chartWidth: width-2*margin}
+}
+
+</script>
+</body>
+</html>
