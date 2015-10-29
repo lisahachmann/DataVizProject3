@@ -8,6 +8,7 @@
         <script src="./button.js"></script>
     </head>
 <body>
+<<<<<<< HEAD
     <h1></h1>
     <div>
         <svg id ="viz" height="500" width="800" style="border: 1px solid grey"></svg>
@@ -15,6 +16,10 @@
 
     <div class="btn-group" role="group">
       <button type="button" class="btn btn-default" id="Britain">Britain</button>
+=======
+<div class = "btn-group" role = "group">
+<button type = "button" class ="btn btn-default" id="Britain">Britain</button>
+>>>>>>> 4805feff4e4016b78fe1ef4323a77c37723b64b8
       <button type="button" class="btn btn-default" id="France">France</button>
       <button type="button" class="btn btn-default" id="Germany">Germany</button>
       <button type="button" class="btn btn-default" id="Italy">Italy</button>
@@ -24,7 +29,25 @@
       <button type="button" class="btn btn-default" id="Czech Republic">Czech Republic</button>
     </div>
 
-    <script type="text/javascript">
+<script type="text/javascript">
+    d3.csv("EuropeanUnionfeelings.csv", function(data) {
+    console.log(data);
+    });
+
+
+    function computeSizes (svg) {
+    // get the size of the SVG element
+    var height = svg.attr("height");
+    var width = svg.attr("width");
+    var margin = 10;
+    // the chart lives in the svg surrounded by a margin of 100px
+    return {height:height,
+	    width: width,
+	    margin: margin,
+	    chartHeight: height-2*margin,
+	    chartWidth: width-2*margin}
+}
+
         window.addEventListener("load", run);
 
         function run () {
@@ -42,22 +65,19 @@
 
         }
 
-        function computeSizes (svg) {
+function grabcorrectdata(country){
+    countbyColumn(country, )
+}
 
-        // get the size of the SVG element
-        var height = svg.attr("height");
-        var width = svg.attr("width");
-        var margin = 100;
-
-        // the chart lives in the svg surrounded by a margin of 100px
-
-        return {height:height,
-    	    width: width,
-    	    margin: margin,
-    	    chartHeight: height-2*margin,
-    	    chartWidth: width-2*margin}
-        }
-
+<<<<<<< HEAD
     </script>
+=======
+function countbyColumn(data, pred, col){
+     data.forEach(function(r) {
+         data[country]
+}
+}
+</script>
+>>>>>>> 4805feff4e4016b78fe1ef4323a77c37723b64b8
 </body>
 </html>
