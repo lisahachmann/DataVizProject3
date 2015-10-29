@@ -1,4 +1,4 @@
-PSRAID,COUNTRY,Q44A,Q44B,Q45A,Q45B,Q46A,Q46B
+PSRAID,COUNTRY,maxTrust,minTrust,maxArrogance,minArrogance,maxCompassion,minCompassion
 101003,Czech Republic,Don't know,Czech Republic,Czech Republic,Don't know,Don't know,Germany
 101004,Czech Republic,Sweden,Romania,Germany,Slovakia,Czech Republic,Don't know
 101005,Czech Republic,Slovakia,Don't know,Don't know,Don't know,Slovakia,Germany

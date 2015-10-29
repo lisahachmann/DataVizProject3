@@ -5,7 +5,6 @@
         <title>Social Media Data Charts</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-        <script src="./button.js"></script>
     </head>
 <body>
 <div class = "btn-group" role = "group">
@@ -20,11 +19,7 @@
     </div>
 
 <script type="text/javascript">
-    d3.csv("EuropeanUnionfeelings.csv", function(data) {
-    console.log(data);
-    });
-
-
+    var GLOBAL = {data: [], big_countries:["Britain", "France", "Germany", "Italy", "Spain", "Greece, Poland", "Czech Republic"]}
     function computeSizes (svg) {
     // get the size of the SVG element
     var height = svg.attr("height");
@@ -37,31 +32,39 @@
 	    chartHeight: height-2*margin,
 	    chartWidth: width-2*margin}
 }
-
         window.addEventListener("load", run);
 
         function run () {
 
         d3.csv("EuropeanUnionfeelings.csv", function(data) {
-        console.log(data);
+        GLOBAL.data = data;
         });
 
         d3.selectAll("button").on("click", function(){
-        console.log(this.id)});
-
+        var j = countbyColumn(this.id);
+        console.log(j)});
         }
 
-
-
-function grabcorrectdata(country){
-    countbyColumn(country, )
+function countbyColumn(country, observation){
+    var counts = {};
+     GLOBAL.data.forEach(function(r) {
+         if (r["COUNTRY"] == country){
+            if (r["COUNTRY"] in counts){
+                counts[r["COUNTRY"]] +=1;
+            }
+            else{
+                counts[r["COUNTRY"]] = 1;
+            }
+        }
+    })
+    var countMaxTrust= {};
+    counts.forEach(function(r){
+        if r["maxTrust"]
+    })
+return counts;
 }
 
-function countbyColumn(data, pred, col){
-     data.forEach(function(r) {
-         data[country]
-}
-}
+
 </script>
 </body>
 </html>
