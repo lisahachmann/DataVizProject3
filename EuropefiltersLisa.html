@@ -45,23 +45,35 @@
         console.log(j)});
         }
 
-function countbyColumn(country, observation){
+function countbyColumn(country){
+    var observation = 'Arrogance';
     var counts = {};
+    var bigresponses0 = {};
+    var bigresponses1 = {};
      GLOBAL.data.forEach(function(r) {
          if (r["COUNTRY"] == country){
             if (r["COUNTRY"] in counts){
                 counts[r["COUNTRY"]] +=1;
+                if(r[observation+"0"] in bigresponses0){
+                    bigresponses0[r[observation+"0"]] +=1;
+                }
+                else {
+                    bigresponses0[r[observation+"0"]] =1;
+                }
+                if(r[observation+"1"] in bigresponses1){
+                    bigresponses1[r[observation+"1"]] +=1;
+                }
+                else{
+                    bigresponses1[r[observation+"1"]] =1;
+                }
             }
             else{
                 counts[r["COUNTRY"]] = 1;
             }
         }
     })
-    var countMaxTrust= {};
-    counts.forEach(function(r){
-        if r["maxTrust"]
-    })
-return counts;
+
+return {bigresponses0,bigresponses1};
 }
 
 
