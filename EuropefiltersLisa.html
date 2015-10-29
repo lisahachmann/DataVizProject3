@@ -8,6 +8,10 @@
         <script src="./button.js"></script>
     </head>
 <body>
+    <h1></h1>
+    <div>
+        <svg id ="viz" height="500" width="800" style="border: 1px solid grey"></svg>
+    </div>
 
     <div class="btn-group" role="group">
       <button type="button" class="btn btn-default" id="Britain">Britain</button>
@@ -32,9 +36,11 @@
         d3.selectAll("button").on("click", function(){
         console.log(this.id)});
 
+        d3.selectAll("svg").on("click", function(){
+            alert('hello');
+        });
+
         }
-
-
 
         function computeSizes (svg) {
 
@@ -52,6 +58,6 @@
     	    chartWidth: width-2*margin}
         }
 
-</script>
+    </script>
 </body>
 </html>
