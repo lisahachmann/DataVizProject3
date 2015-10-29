@@ -13,70 +13,74 @@
     </div>
 
     <div class="btn-group" role="group">
-      <button type="button" class="btn btn-default" id="Britain">Britain</button>
-      <button type="button" class="btn btn-default" id="France">France</button>
-      <button type="button" class="btn btn-default" id="Germany">Germany</button>
-      <button type="button" class="btn btn-default" id="Italy">Italy</button>
-      <button type="button" class="btn btn-default" id="Spain">Spain</button>
-      <button type="button" class="btn btn-default" id="Greece">Greece</button>
-      <button type="button" class="btn btn-default" id="Poland" >Poland</button>
-      <button type="button" class="btn btn-default" id="Czech Republic">Czech Republic</button>
+      <button type="button" class="btn btn-default country" id="Britain">Britain</button>
+      <button type="button" class="btn btn-default country" id="France">France</button>
+      <button type="button" class="btn btn-default country" id="Germany">Germany</button>
+      <button type="button" class="btn btn-default country" id="Italy">Italy</button>
+      <button type="button" class="btn btn-default country" id="Spain">Spain</button>
+      <button type="button" class="btn btn-default country" id="Greece">Greece</button>
+      <button type="button" class="btn btn-default country" id="Poland" >Poland</button>
+      <button type="button" class="btn btn-default country" id="Czech Republic">Czech Republic</button>
     </div>
+
     <div class ="btn-group" role="group">
-      <button type="button" class="btn btn-default" id="Trustworthiness">Trustworthiness</button>
-      <button type="button" class="btn btn-default" id="Arrogant">
+      <button type="button" class="btn btn-default observation" id="Trustworthiness">Trustworthiness</button>
+      <button type="button" class="btn btn-default observation" id="Arrogant">
       Arrogant
       </button>
-      <button type="button" class="btn btn-default" id="Compassionate">Compassionate</button>
+      <button type="button" class="btn btn-default observation" id="Compassionate">Compassionate</button>
     </div>
 
 
     </div>
 
 <script type="text/javascript">
-    d3.csv("EuropeanUnionfeelings.csv", function(data) {
-    console.log(data);
-    });
-
-
+    var GLOBAL = {data: [], country_button: null, observation_button: null, big_countries:["Britain", "France", "Germany", "Italy", "Spain", "Greece, Poland", "Czech Republic"]};
     function computeSizes (svg) {
     // get the size of the SVG element
     var height = svg.attr("height");
     var width = svg.attr("width");
     var margin = 10;
     // the chart lives in the svg surrounded by a margin of 100px
-    return {height:height,
+    return { height:height,
 	    width: width,
 	    margin: margin,
 	    chartHeight: height-2*margin,
 	    chartWidth: width-2*margin}
 }
-
         window.addEventListener("load", run);
 
         function run () {
 
         d3.csv("EuropeanUnionfeelings.csv", function(data) {
-        console.log(data);
+        GLOBAL.data = data;
         });
 
         d3.selectAll("button").on("click", function(){
-        console.log(this.id)});
 
-        d3.selectAll("svg").on("click", function(){
-            alert('hello');
-        });
-
+        var j = countbyColumn(this.id);
+        console.log(j)});
         }
 
-function grabcorrectdata(country){
-    countbyColumn(country, )
+function countbyColumn(country, observation){
+    var counts = {};
+     GLOBAL.data.forEach(function(r) {
+         if (r["COUNTRY"] == country){
+            if (r["COUNTRY"] in counts){
+                counts[r["COUNTRY"]] += 1;
+            }
+            else{
+                counts[r["COUNTRY"]] = 1;
+            }
+        }
+    })
+    var countMaxTrust= {};
+    counts.forEach(function(r){
+        if r["maxTrust"]
+    })
+return counts;
 }
 
-function countbyColumn(data, pred, col){
-     data.forEach(function(r) {
-         data['country]
-}
 </script>
 </body>
 </html>
