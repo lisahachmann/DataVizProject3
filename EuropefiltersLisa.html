@@ -7,26 +7,42 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
     </head>
 <body>
-<div class = "btn-group" role = "group">
-<button type = "button" class ="btn btn-default" id="Britain">Britain</button>
-      <button type="button" class="btn btn-default" id="France">France</button>
-      <button type="button" class="btn btn-default" id="Germany">Germany</button>
-      <button type="button" class="btn btn-default" id="Italy">Italy</button>
-      <button type="button" class="btn btn-default" id="Spain">Spain</button>
-      <button type="button" class="btn btn-default" id="Greece">Greece</button>
-      <button type="button" class="btn btn-default" id="Poland">Poland</button>
-      <button type="button" class="btn btn-default" id="Czech Republic">Czech Republic</button>
+    <h1></h1>
+    <div>
+        <svg id ="viz" height="500" width="800" style="border: 1px solid grey"></svg>
+    </div>
+
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-default country" id="Britain">Britain</button>
+      <button type="button" class="btn btn-default country" id="France">France</button>
+      <button type="button" class="btn btn-default country" id="Germany">Germany</button>
+      <button type="button" class="btn btn-default country" id="Italy">Italy</button>
+      <button type="button" class="btn btn-default country" id="Spain">Spain</button>
+      <button type="button" class="btn btn-default country" id="Greece">Greece</button>
+      <button type="button" class="btn btn-default country" id="Poland" >Poland</button>
+      <button type="button" class="btn btn-default country" id="Czech Republic">Czech Republic</button>
+    </div>
+
+    <div class ="btn-group" role="group">
+      <button type="button" class="btn btn-default observation" id="Trustworthiness">Trustworthiness</button>
+      <button type="button" class="btn btn-default observation" id="Arrogant">
+      Arrogant
+      </button>
+      <button type="button" class="btn btn-default observation" id="Compassionate">Compassionate</button>
+    </div>
+
+
     </div>
 
 <script type="text/javascript">
-    var GLOBAL = {data: [], big_countries:["Britain", "France", "Germany", "Italy", "Spain", "Greece, Poland", "Czech Republic"]}
+    var GLOBAL = {data: [], country_button: null, observation_button: null, big_countries:["Britain", "France", "Germany", "Italy", "Spain", "Greece, Poland", "Czech Republic"]};
     function computeSizes (svg) {
     // get the size of the SVG element
     var height = svg.attr("height");
     var width = svg.attr("width");
     var margin = 10;
     // the chart lives in the svg surrounded by a margin of 100px
-    return {height:height,
+    return { height:height,
 	    width: width,
 	    margin: margin,
 	    chartHeight: height-2*margin,
@@ -41,6 +57,7 @@
         });
 
         d3.selectAll("button").on("click", function(){
+
         var j = countbyColumn(this.id);
         console.log(j)});
         }
@@ -75,7 +92,6 @@ function countbyColumn(country){
 
 return {bigresponses0,bigresponses1};
 }
-
 
 </script>
 </body>
