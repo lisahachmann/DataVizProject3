@@ -7,9 +7,10 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
     </head>
 <body>
-    <h1></h1>
+    <h1>European country's views of each other</h1>
     <div>
-        <svg id ="viz" height="500" width="800" style="border: 1px solid grey"></svg>
+        <svg id ="viz" height="500" width="925" style="border: 1px solid grey"></svg>
+
     </div>
 
     <div class="btn-group" role="group">
@@ -35,7 +36,14 @@
     </div>
 
 <script type="text/javascript">
-    var GLOBAL = {data: [], country_button: null, observation_button: null, big_countries:["Britain", "France", "Germany", "Italy", "Spain", "Greece, Poland", "Czech Republic"]};
+
+    var Gsvg = d3.select("#viz");
+    var gheight = Gsvg.attr("height");
+    var gwidth = Gsvg.attr("width");
+    var gGroup = Gsvg.append("g");
+
+    var GLOBAL = {data: [], country_button: null, observation_button: null, countryob: null, big_countries:["Britain", "France", "Germany", "Italy", "Spain", "Greece, Poland", "Czech Republic"]};
+
     function computeSizes (svg) {
     // get the size of the SVG element
     var height = svg.attr("height");
@@ -48,12 +56,15 @@
 	    chartHeight: height-2*margin,
 	    chartWidth: width-2*margin}
 }
+
         window.addEventListener("load", run);
 
         function run () {
 
         d3.csv("EuropeanUnionfeelings.csv", function(data) {
         GLOBAL.data = data;
+        console.log("Loaded data");
+        draw();
         });
 
         d3.selectAll("button.country").on("click", function(){
@@ -67,13 +78,14 @@
           stateCheck();
           console.log("CLICKED OBSERVATION");
         });
+
       }
 
 function stateCheck(){
   if ((GLOBAL.country_button !== null) && (GLOBAL.observation_button !== null)){
-    var countryob = countbyColumn(GLOBAL.country_button, GLOBAL.observation_button)
+    GLOBAL.countryob = countbyColumn(GLOBAL.country_button, GLOBAL.observation_button)
   }
-    console.log(countryob);
+  console.log(GLOBAL.countryob);
   console.log("STATE CHECK");
 }
 
@@ -92,7 +104,6 @@ function countbyColumn(country,observation){
             if (r["COUNTRY"] in counts){
                 all = all + 1;
                 counts[r["COUNTRY"]] +=1;
-                console.log(bigresponses0);
                 if(r[observation+"0"] in bigresponses0){
                     bigresponses0[r[observation+"0"]] +=1;
                 }
@@ -111,7 +122,24 @@ function countbyColumn(country,observation){
             }
         }
     })
-    return {bigresponses0, bigresponses1}
+    return {bigresponses0, bigresponses1, counts}
+}
+
+function draw(){
+    barPadding = gwidth/20;
+    var g = gGroup.selectAll("rect")
+    .data(GLOBAL.data)
+    .enter()
+    .append("g");
+
+    /*g.append("rect") //Makes the columns for male percentages of all sites
+    .attr("x",function(d, i){return i * (computeSizes(d3.select("#viz")).width/GLOBAL.data.length + barPadding/1.5)})
+    .attr("y",function(d){return computeSizes(d3.select("#viz")).height - d.Britain})
+    .attr("width", 20)
+    .attr("height", 20)
+    .style("fill", "blue");
+
+    console.log("Ran draw");*/
 }
 
 </script>
