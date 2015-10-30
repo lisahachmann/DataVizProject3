@@ -54,30 +54,32 @@
 	    margin: margin,
 	    chartHeight: height-2*margin,
 	    chartWidth: width-2*margin}
+    }
+
+    window.addEventListener("load", run);
+
+function run () {
+
+  d3.csv("EuropeanUnionfeelings.csv", function(data) {
+    GLOBAL.data = data;
+    console.log("Loaded data");
+    draw();
+  });
+
+  d3.selectAll("button.country").on("click", function(){
+    GLOBAL.country_button = this.id;
+    stateCheck();
+    console.log("CLICKED COUNTRY");
+  });
+
+  d3.selectAll("button.observation").on("click", function(){
+    GLOBAL.observation_button = this.id;
+    stateCheck();
+    console.log("CLICKED OBSERVATION");
+  });
+
 }
 
-        window.addEventListener("load", run);
-
-        function run () {
-
-        d3.csv("EuropeanUnionfeelings.csv", function(data) {
-        GLOBAL.data = data;
-        console.log("Loaded data");
-        draw();
-
-        d3.selectAll("button.country").on("click", function(){
-          GLOBAL.country_button = this.id;
-          stateCheck();
-          console.log("CLICKED COUNTRY");
-        });
-
-        d3.selectAll("button.observation").on("click", function(){
-          GLOBAL.observation_button = this.id;
-          stateCheck();
-          console.log("CLICKED OBSERVATION");
-        });
-
-      }
 
 function stateCheck(){
   if ((GLOBAL.country_button !== null) && (GLOBAL.observation_button !== null)){
@@ -138,24 +140,6 @@ function draw(){
     .style("fill", "blue");
 
     console.log("Ran draw");*/
-}
-
-function draw(){
-    console.log(GLOBAL.data);
-    barPadding = gwidth/20;
-    var g = gGroup.selectAll("rect")
-    .data(GLOBAL.data)
-    .enter()
-    .append("g");
-
-    g.append("rect") //Makes the columns for male percentages of all sites
-    .attr("x",function(d, i){return i * (computeSizes(d3.select("#viz")).width/GLOBAL.data.length + barPadding/1.5)})
-    .attr("y",function(d){return computeSizes(d3.select("#viz")).height - d.Britain})
-    .attr("width", 20)
-    .attr("height", 20)
-    .style("fill", "blue");
-
-    console.log("Ran draw");
 }
 
 </script>
