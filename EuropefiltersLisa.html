@@ -5,6 +5,16 @@
         <title>Social Media Data Charts</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+        <style>
+        .axis text {
+            font: 10px sans-serif;
+        }
+        .axis path, .axis line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+</style>
     </head>
 <body>
     <h1>European country's views of each other</h1>
@@ -126,43 +136,29 @@ function countbyColumn(country,observation){
     return {bigresponses0, bigresponses1, counts}
 }
 
-function draw(){
-    barPadding = gwidth/20;
-    var g = gGroup.selectAll("rect")
-    .data(GLOBAL.data)
-    .enter()
-    .append("g");
-
-    /*g.append("rect") //Makes the columns for male percentages of all sites
-    .attr("x",function(d, i){return i * (computeSizes(d3.select("#viz")).width/GLOBAL.data.length + barPadding/1.5)})
-    .attr("y",function(d){return computeSizes(d3.select("#viz")).height - d.Britain})
-    .attr("width", 20)
-    .attr("height", 20)
-    .style("fill", "blue");
-
-    console.log("Ran draw");*/
-
-}
 
 
 function draw(){
     // console.log(GLOBAL.data);
+    var margin = {top: 30, right: 10, bottom: 50, left: 50};
+    xScale = d3.scale.ordinal();
+    yScale = d3.scale.linear();
+    yAxis = d3.svg.axis().scale(yScale).orient("left"),
+    xAxis = d3.svg.axis().scale(xScale);
+
     barPadding = gwidth/20;
     var g = gGroup.selectAll("rect")
     .data(GLOBAL.data)
     .enter()
     .append("g");
-    xScale = d3.scale.ordinal(),
-    yScale = d3.scale.linear()
 
-    g.append("rect") //Makes the columns for male percentages of all sites
-    .attr("x",function(d, i){return i * (computeSizes(d3.select("#viz")).width/GLOBAL.data.length + barPadding/1.5)})
-    // .attr("y",GLOBAL.data.Britain)
-    .attr("width", 20)
-    .attr("height", countbyColumn.bigresponses0)
-    .style("fill", "blue");
+    g.select(".x.axis")
+    .attr("transform", "translate(0," + (computeSizes(d3.select("#viz")).height - margin.top - margin.bottom) + ")")
+    .call(xAxis.orient("bottom"));
 
-    console.log("Ran draw");
+    yAxis = d3.svg.axis().scale(yScale).orient("left"),
+    xAxis = d3.svg.axis().scale(xScale);
+
 }
 
 
