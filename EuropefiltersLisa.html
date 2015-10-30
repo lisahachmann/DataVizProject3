@@ -55,11 +55,11 @@
 	    margin: margin,
 	    chartHeight: height-2*margin,
 	    chartWidth: width-2*margin}
-}
+    }
 
-        window.addEventListener("load", run);
+    window.addEventListener("load", run);
 
-        function run () {
+function run () {
 
         d3.csv("EuropeanUnionfeelings.csv", function(data) {
         GLOBAL.data = data;
@@ -67,19 +67,20 @@
         draw();
         });
 
-        d3.selectAll("button.country").on("click", function(){
-          GLOBAL.country_button = this.id;
-          stateCheck();
-          console.log("CLICKED COUNTRY");
-        });
+  d3.selectAll("button.country").on("click", function(){
+    GLOBAL.country_button = this.id;
+    stateCheck();
+    console.log("CLICKED COUNTRY");
+  });
 
-        d3.selectAll("button.observation").on("click", function(){
-          GLOBAL.observation_button = this.id;
-          stateCheck();
-          console.log("CLICKED OBSERVATION");
-        });
+  d3.selectAll("button.observation").on("click", function(){
+    GLOBAL.observation_button = this.id;
+    stateCheck();
+    console.log("CLICKED OBSERVATION");
+  });
 
-      }
+}
+
 
 function stateCheck(){
   if ((GLOBAL.country_button !== null) && (GLOBAL.observation_button !== null)){
@@ -143,6 +144,7 @@ function draw(){
 
 }
 
+
 function draw(){
     // console.log(GLOBAL.data);
     barPadding = gwidth/20;
@@ -162,6 +164,7 @@ function draw(){
 
     console.log("Ran draw");
 }
+
 
 </script>
 </body>
