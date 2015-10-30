@@ -41,12 +41,7 @@
     var gheight = Gsvg.attr("height");
     var gwidth = Gsvg.attr("width");
     var gGroup = Gsvg.append("g");
-
-<<<<<<< HEAD
-    var GLOBAL = {data: [], country_button: null, observation_button: null, countryob: null, big_countries:["Britain", "France", "Germany", "Italy", "Spain", "Greece, Poland", "Czech Republic"]};
-=======
     var GLOBAL = {data: [], country_button: null, observation_button: null, big_countries:["Britain", "France", "Germany", "Italy", "Spain", "Greece, Poland", "Czech Republic"]};
->>>>>>> 2842bf3d9365a5511b18bc9fe1f76e1c01a29cdd
 
     function computeSizes (svg) {
     // get the size of the SVG element
@@ -68,12 +63,7 @@
         d3.csv("EuropeanUnionfeelings.csv", function(data) {
         GLOBAL.data = data;
         console.log("Loaded data");
-<<<<<<< HEAD
         draw();
-=======
-        draw()
->>>>>>> 2842bf3d9365a5511b18bc9fe1f76e1c01a29cdd
-        });
 
         d3.selectAll("button.country").on("click", function(){
           GLOBAL.country_button = this.id;
