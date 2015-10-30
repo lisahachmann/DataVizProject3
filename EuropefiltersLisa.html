@@ -92,7 +92,7 @@ function stateCheck(){
 function countbyColumn(country,observation){
     //var observation = 'Arrogance';
     console.log("COUNT BY COLUMN RUN");
-    console.log(country,observation);
+    // console.log(country,observation);
     var country = "Germany";
     var observation = "Arrogance";
     var counts = {};
@@ -104,7 +104,6 @@ function countbyColumn(country,observation){
             if (r["COUNTRY"] in counts){
                 all = all + 1;
                 counts[r["COUNTRY"]] +=1;
-                console.log(bigresponses0);
                 if(r[observation+"0"] in bigresponses0){
                     bigresponses0[r[observation+"0"]] +=1;
                 }
@@ -124,23 +123,25 @@ function countbyColumn(country,observation){
         }
     })
 
-
-//return {bigresponses0, bigresponses1}
+console.log(bigresponses0)
+return {bigresponses0, bigresponses1}
 }
 
 function draw(){
-    console.log(GLOBAL.data);
+    // console.log(GLOBAL.data);
     barPadding = gwidth/20;
     var g = gGroup.selectAll("rect")
     .data(GLOBAL.data)
     .enter()
     .append("g");
+    xScale = d3.scale.ordinal(),
+    yScale = d3.scale.linear()
 
     g.append("rect") //Makes the columns for male percentages of all sites
     .attr("x",function(d, i){return i * (computeSizes(d3.select("#viz")).width/GLOBAL.data.length + barPadding/1.5)})
-    .attr("y",function(d){return computeSizes(d3.select("#viz")).height - d.Britain})
+    // .attr("y",GLOBAL.data.Britain)
     .attr("width", 20)
-    .attr("height", 20)
+    .attr("height", countbyColumn.bigresponses0)
     .style("fill", "blue");
 
     console.log("Ran draw");
