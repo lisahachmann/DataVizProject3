@@ -9,7 +9,7 @@
 <body>
     <h1>European country's views of each other</h1>
     <div>
-        <svg id ="viz" height="500" width="800" style="border: 1px solid grey"></svg>
+        <svg id ="viz" height="500" width="925" style="border: 1px solid grey"></svg>
 
     </div>
 
@@ -63,6 +63,8 @@
 
         d3.csv("EuropeanUnionfeelings.csv", function(data) {
         GLOBAL.data = data;
+        console.log("Loaded data");
+        draw()
         });
 
         d3.selectAll("button.country").on("click", function(){
@@ -76,6 +78,7 @@
           stateCheck();
           console.log("CLICKED OBSERVATION");
         });
+
       }
 
 function stateCheck(){
@@ -130,15 +133,15 @@ function draw(){
     .append("g");
 
     g.append("rect") //Makes the columns for male percentages of all sites
-    .attr("x", 15)
-    .attr("y",45)
+    .attr("x",function(d, i){return i * (computeSizes(d3.select("#viz")).width/GLOBAL.data.length + barPadding/1.5)})
+    .attr("y",function(d){return computeSizes(d3.select("#viz")).height - d.Britain})
     .attr("width", 20)
     .attr("height", 20)
     .style("fill", "blue");
 
-
+    console.log("Ran draw");
 }
-draw()
+
 </script>
 </body>
 </html>
