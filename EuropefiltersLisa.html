@@ -7,9 +7,10 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
     </head>
 <body>
-    <h1></h1>
+    <h1>European country's views of each other</h1>
     <div>
         <svg id ="viz" height="500" width="800" style="border: 1px solid grey"></svg>
+
     </div>
 
     <div class="btn-group" role="group">
@@ -35,7 +36,14 @@
     </div>
 
 <script type="text/javascript">
+
+    var Gsvg = d3.select("#viz");
+    var gheight = Gsvg.attr("height");
+    var gwidth = Gsvg.attr("width");
+    var gGroup = Gsvg.append("g");
+
     var GLOBAL = {data: [], country_button: null, observation_button: null, big_countries:["Britain", "France", "Germany", "Italy", "Spain", "Greece, Poland", "Czech Republic"]};
+
     function computeSizes (svg) {
     // get the size of the SVG element
     var height = svg.attr("height");
@@ -48,6 +56,7 @@
 	    chartHeight: height-2*margin,
 	    chartWidth: width-2*margin}
 }
+
         window.addEventListener("load", run);
 
         function run () {
@@ -93,6 +102,24 @@ function countbyColumn(country){
 return {bigresponses0,bigresponses1};
 }
 
+function draw(){
+    console.log(GLOBAL.data);
+    barPadding = gwidth/20;
+    var g = gGroup.selectAll("rect")
+    .data(GLOBAL.data)
+    .enter()
+    .append("g");
+
+    g.append("rect") //Makes the columns for male percentages of all sites
+    .attr("x", 15)
+    .attr("y",45)
+    .attr("width", 20)
+    .attr("height", 20)
+    .style("fill", "blue");
+
+
+}
+draw()
 </script>
 </body>
 </html>
