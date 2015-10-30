@@ -65,20 +65,38 @@
         GLOBAL.data = data;
         });
 
-        d3.selectAll("button").on("click", function(){
+        d3.selectAll("button.country").on("click", function(){
+          GLOBAL.country_button = this.id;
+          stateCheck();
+          console.log("CLICKED COUNTRY");
+        });
 
-        var j = countbyColumn(this.id);
-        console.log(j)});
-        }
+        d3.selectAll("button.observation").on("click", function(){
+          GLOBAL.observation_button = this.id;
+          stateCheck();
+          console.log("CLICKED OBSERVATION");
+        });
+      }
 
-function countbyColumn(country){
-    var observation = 'Arrogance';
+function stateCheck(){
+  if ((GLOBAL.country_button !== null) && (GLOBAL.observation_button !== null)){
+    var countryob = countbyColumn(GLOBAL.country_button, GLOBAL.observation_button)
+  }
+    console.log(countryob);
+  console.log("STATE CHECK");
+}
+
+function countbyColumn(country,observation){
+    //var observation = 'Arrogance';
+    console.log("COUNT BY COLUMN RUN");
     var counts = {};
+    var all = 0;
     var bigresponses0 = {};
     var bigresponses1 = {};
      GLOBAL.data.forEach(function(r) {
          if (r["COUNTRY"] == country){
             if (r["COUNTRY"] in counts){
+                all = all + 1;
                 counts[r["COUNTRY"]] +=1;
                 if(r[observation+"0"] in bigresponses0){
                     bigresponses0[r[observation+"0"]] +=1;
@@ -99,7 +117,8 @@ function countbyColumn(country){
         }
     })
 
-return {bigresponses0,bigresponses1};
+
+return {bigresponses0, bigresponses1, all}
 }
 
 function draw(){
