@@ -17,13 +17,15 @@
 </style>
     </head>
 <body>
-    <h1>European country's views of each other</h1>
+    <h1 align="center">European country's views of each other</h1>
     <div>
+        <div style="text-align:center;">
         <svg id ="viz" height="500" width="925" style="border: 1px solid grey"></svg>
 
     </div>
 
     <div class="btn-group" role="group">
+
       <button type="button" class="btn btn-default country" id="Britain">Britain</button>
       <button type="button" class="btn btn-default country" id="France">France</button>
       <button type="button" class="btn btn-default country" id="Germany">Germany</button>
@@ -136,15 +138,19 @@ function countbyColumn(country,observation){
     return {bigresponses0, bigresponses1, counts}
 }
 
-
-
 function draw(){
     // console.log(GLOBAL.data);
     var margin = {top: 30, right: 10, bottom: 50, left: 50};
     xScale = d3.scale.ordinal();
     yScale = d3.scale.linear();
+
     yAxis = d3.svg.axis().scale(yScale).orient("left"),
     xAxis = d3.svg.axis().scale(xScale);
+
+    yScale
+    .domain(d3.extent(GLOBAL.data.map(function(d) { return d[1];} )))
+    .range([computeSizes(d3.select("#viz")).height - margin.top - margin.bottom, 0])
+    .nice();
 
     barPadding = gwidth/20;
     var g = gGroup.selectAll("rect")
@@ -155,12 +161,15 @@ function draw(){
     g.select(".x.axis")
     .attr("transform", "translate(0," + (computeSizes(d3.select("#viz")).height - margin.top - margin.bottom) + ")")
     .call(xAxis.orient("bottom"));
-
-    yAxis = d3.svg.axis().scale(yScale).orient("left"),
-    xAxis = d3.svg.axis().scale(xScale);
+    // zero line
+     g.select(".x.axis.zero")
+    .attr("transform", "translate(0," + Y0() + ")")
+    .call(xAxis.tickFormat("").tickSize(0));
 
 }
-
+function Y0() {
+  return yScale(0);
+}
 
 </script>
 </body>
