@@ -207,7 +207,7 @@
 
         //store keys
         var ks = ['Austria','Belgium','Bulgaria','Cyprus','Czech Republic','Denmark','Estonia','Finland','France','Germany','Great Britain/United Kingdom','Greece','Hungary','Ireland','Italy','Latvia','Lithuania','Luxembourg','Malta','Netherlands','Poland','Portugal','Romania','Slovakia','Slovenia','Spain','Sweden']
-        //,"Don't know", 'Refused', 'None']
+
         //store key value pairs
         var kv = [];
         for (var k in big0) {
@@ -253,8 +253,6 @@
           .style("font-size","10px")
           .text(function(d) {return ((Math.round(d[1]*1000))/10).toString() + "%";});
 
-        var barPadding = gwidth/20;
-
         g.select(".x.axis")
           .attr("transform", "translate(0,400)")
           .call(xAxis.orient("bottom"));
@@ -274,6 +272,8 @@
                 .attr("transform", function(d){
                   return "rotate(-15)"
                 });
+
+        
 
         //bar.selectAll(".rect").transition().duration(100);
 
