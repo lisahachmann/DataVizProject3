@@ -7,6 +7,14 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
         <style>
 
+        .bar.positive {
+          fill: steelblue;
+        }
+
+        .bar.negative {
+          fill: brown;
+        }
+
         rect {
           stroke: white;
           fill-opacity: .6;
@@ -27,10 +35,10 @@
     <h1>European country's views of each other</h1>
     <div>
         <svg id ="viz" height="500" width="1400" style="border: 1px solid grey"></svg>
-
     </div>
 
     <div class="btn-group" role="group">
+      <h3>What is this country's opinion of other European nations?</h3>
       <button type="button" class="btn btn-default country" id="Britain">Britain</button>
       <button type="button" class="btn btn-default country" id="France">France</button>
       <button type="button" class="btn btn-default country" id="Germany">Germany</button>
@@ -40,14 +48,16 @@
       <button type="button" class="btn btn-default country" id="Poland" >Poland</button>
       <button type="button" class="btn btn-default country" id="Czech Republic">Czech Republic</button>
     </div>
+    <div>
+      <div class ="btn-group" role="group">
+        <h3>based on this characteristic?</h3>
 
-    <div class ="btn-group" role="group">
-      <button type="button" class="btn btn-default observation" id="Trust">Trustworthiness</button>
-      <button type="button" class="btn btn-default observation" id="Arrogance">
-      Arrogant
-      </button>
-      <button type="button" class="btn btn-default observation" id="Compassion">Compassionate</button>
-    </div>
+        <button type="button" class="btn btn-default observation" id="Trust">Trust</button>
+        <button type="button" class="btn btn-default observation" id="Arrogance">
+        Arrogant
+        </button>
+        <button type="button" class="btn btn-default observation" id="Compassion">Compassion</button>
+      </div>
     </div>
 
 <script type="text/javascript">
@@ -62,10 +72,10 @@
     window.addEventListener("load", run);
 
 function run () {
-        d3.csv("EuropeanUnionfeelings.csv", function(data) {
-        GLOBAL.data = data;
-        console.log("Loaded data");
-        });
+  d3.csv("EuropeanUnionfeelings.csv", function(data) {
+  GLOBAL.data = data;
+  console.log("Loaded data");
+  });
 
   d3.selectAll("button.country").on("click", function(){
     GLOBAL.country_button = this.id;
@@ -78,9 +88,7 @@ function run () {
     stateCheck();
     console.log("CLICKED OBSERVATION");
   });
-
 }
-
 
 function stateCheck(){
   if ((GLOBAL.country_button !== null) && (GLOBAL.observation_button !== null)){
@@ -91,9 +99,7 @@ function stateCheck(){
 }
 
 function countbyColumn(country,observation){
-    //var observation = 'Arrogance';
     console.log("COUNT BY COLUMN RUN");
-    // console.log(country,observation);
     var counts = {};
     var all = 0;
     var bigresponses0 = {};
@@ -124,8 +130,6 @@ function countbyColumn(country,observation){
     return {bigresponses0, bigresponses1, counts}
 }
 
-
-
 function draw(){
     //setting up chart dimensions
     var height = 500;
@@ -134,6 +138,7 @@ function draw(){
     var margin = {top: 30, right: 10, bottom: 50, left: 50};
 
     //makes sure no extra child elements added when any button is clicked.
+
     d3.select("#viz").selectAll("*").remove();
     gEnter = d3.select("#viz").append("g");
 
@@ -159,9 +164,15 @@ function draw(){
     //store key value pairs
     var kv = [];
     for (var k in big0) {
-      //storing
+      //storing 
       var v = big0[k];
       kv.push([k,v*1.0/count]);
+    }
+
+    for (var k in big1) {
+      //storing 
+      var v = big1[k];
+      kv.push([k,-v*1.0/count]);
     }
 
     //setting up axes and scales
@@ -169,22 +180,26 @@ function draw(){
           .domain(ks)
           .rangeRoundBands([0,(width-margin.left-margin.right)],0.2);
     yScale = d3.scale.linear()
-          .domain([0,.5])
+          .domain([.3,-.3])
           .range([0,400])
           .nice();
     xAxis = d3.svg.axis().scale(xScale);
     yAxis = d3.svg.axis().scale(yScale).orient("left");
 
-    var bar = gEnter.select(".bars").selectAll(".rect").data(kv).enter().append("rect");
-    bar.attr("x", function(d) {return X(d)})
-        .attr("y", 200)
-        .attr("width", 30)
-        .attr("height", function(d) {return Y(d)});
+    var bar = gEnter.select(".bars").selectAll(".rect").data(kv).enter().append("rect")
+      .transition()
+      .duration(3000)
+      .ease("linear")
+      .attr("class", function(d, i) { return d[1] < 0 ? "bar negative" : "bar positive"; })
+      .attr("x", function(d) {return X(d)})
+      .attr("y", function(d,i) { return d[1] < 0 ? Y0() : Y(d);})
+      .attr("width", 30)
+      .attr("height", function(d) {return Math.abs(Y(d) - Y0()); });
 
     var barPadding = gwidth/20;
 
     g.select(".x.axis")
-      .attr("transform", "translate(0,300)")
+      .attr("transform", "translate(0,400)")
       .call(xAxis.orient("bottom"));
 
      g.select(".y.axis")
@@ -194,6 +209,16 @@ function draw(){
     g.select(".x.axis.zero")
         .attr("transform", "translate(0," + Y0() + ")")
         .call(xAxis.tickFormat("").tickSize(0));
+
+    g.selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", function(d){
+              return "rotate(-15)"
+            });
+
+    bar.selectAll(".rect").transition().duration(100);
 
     function X(d) {
       return xScale(d[0]);
