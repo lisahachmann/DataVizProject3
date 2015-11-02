@@ -39,20 +39,33 @@
     button {
       display: center;
     }
+    p {
+      margin-right: 25px;
+      padding-right: 20px;
+      padding-left: 20px;
+      padding-top: 225px;
+    }
+    #selector {
+      width: 100px;
+      float: right;
+    }
     </style>
   </head>
   <body>
     <h1 align="center">European country's views of each other</h1>
-    <div style="display: inline-block">
-      <svg id ="viz" height="500" width="1200" style="border: 1px solid grey"></svg>
+    <div>
+      <svg id ="viz" height="500" width="1100" style="border: 1px solid grey" style="float: left"></svg>
+      <p style="float: right">Blue indicates that country selected <br>is considered the most of its observation. <br> Red indicates that it is the least.</p>
+      
     </div>
-    <div style="display: inline-block" >
-      <div class="selector-title">Gender:</div>
-      <select class="filter" id="select-gender" multiple=""><option value="Female">Female</option><option value="Male">Male</option></select>
-      <div class="selector-title">Age group:</div>
-      <select class="filter" id="select-age" multiple=""><option class = "age" value="18-29">18-29</option><option class = "age" value="30-49">30-49</option><option class = "age" value="50-64">50-64</option><option class = "age" value="65+">65+</option></select>
-      <!--<div class="selector-title">Base: <span id="span-base">10000</span></div>-->
-    </div>
+     <div id = "selector">
+        <div class="selector-title">Gender:</div>
+        <select class="filter" id="select-gender" multiple=""><option value="Female">Female</option><option value="Male">Male</option></select>
+        <div class="selector-title">Age group:</div>
+        <select class="filter" id="select-age" multiple=""><option class = "age" value="18-29">18-29</option><option class = "age" value="30-49">30-49</option><option class = "age" value="50-64">50-64</option><option class = "age" value="65+">65+</option></select>
+      </div>
+
+
 
     <div class="btn-group" role="group">
       <h3>What is this country's opinion of other European nations?</h3>
@@ -176,7 +189,7 @@
       function draw(){
         //setting up chart dimensions
         var height = 500;
-        var width = 1200;
+        var width = 1100;
 
         var margin = {top: 30, right: 10, bottom: 50, left: 50};
 
@@ -272,6 +285,13 @@
                 .attr("transform", function(d){
                   return "rotate(-15)"
                 });
+        d3.select("#viz").append("g").append("text")
+          .attr("x", "-325")
+          .attr("y", "20")
+          .text("% of Respondents That Agree")
+          .attr("transform", function(d){
+            return "rotate(-90)"         
+          });
 
         
 
