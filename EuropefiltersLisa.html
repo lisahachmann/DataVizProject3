@@ -50,7 +50,7 @@
       <div class="selector-title">Gender:</div>
       <select class="filter" id="select-gender" multiple=""><option value="Female">Female</option><option value="Male">Male</option></select>
       <div class="selector-title">Age group:</div>
-      <select class="filter" id="select-age" multiple=""><option value="18-29">18-29</option><option value="30-49">30-49</option><option value="50-64">50-64</option><option value="65+">65+</option></select>
+      <select class="filter" id="select-age" multiple=""><option class = "age" value="18-29">18-29</option><option class = "age" value="30-49">30-49</option><option class = "age" value="50-64">50-64</option><option class = "age" value="65+">65+</option></select>
       <!--<div class="selector-title">Base: <span id="span-base">10000</span></div>-->
     </div>
 
@@ -83,12 +83,12 @@
       var gheight = Gsvg.attr("height");
       var gwidth = Gsvg.attr("width");
 
-      var GLOBAL = {data: [], country_button: null, observation_button: null, countryob: null};
+      var GLOBAL = {data: [], country_button: null, observation_button: null, countryob: null, male: true, female: true};//, ages: {}};
 
       window.addEventListener("load", run);
 
       function run () {
-        d3.csv("EuropeanUnionfeelings.csv", function(data) {
+        d3.csv("EuropeanWithAge.csv", function(data) {
         GLOBAL.data = data;
         console.log("LOADED DATA");
         });
@@ -108,52 +108,69 @@
           stateCheck();
           console.log("CLICKED OBSERVATION");
         });
+
+        d3.selectAll("select.filter").on("change", function(){
+          stateCheck()
+        })
+      }
+
+      function isSelected (selectorId,val) {
+        return d3.select("#"+selectorId+" > option[value='"+val+"']")
+        .property("selected");
+      }
+
+
+      function keepSelectorsRow (r) { 
+          return (isSelected("select-gender",r.Gender) && isSelected("select-age",r.Age));
       }
 
       function stateCheck(){
         if ((GLOBAL.country_button !== null) && (GLOBAL.observation_button !== null)){
-          GLOBAL.countryob = countbyColumn(GLOBAL.country_button, GLOBAL.observation_button)
-          console.log(GLOBAL.countryob);
+          GLOBAL.countryob = countbyColumn(GLOBAL.country_button, GLOBAL.observation_button, keepSelectorsRow);
           draw();
         }
         console.log("STATE CHECK");
       }
 
-      function countbyColumn(country,observation){
+      function countbyColumn(country,observation, pred){
         console.log("COUNT BY COLUMN RUN");
 
         var arr = ["Don't know", "Refused", "None"];
         var counts = {};
+        var count0 = 0;
+        var count1 = 0;
         var bigresponses0 = {};
         var bigresponses1 = {};
         GLOBAL.data.forEach(function(r) {
-          if (r["COUNTRY"] == country){
-            if (r["COUNTRY"] in counts){
-              counts[r["COUNTRY"]] += 1;
-              if (arr.indexOf(r[observation+"0"]) !== -1){
-
+          if (pred(r)){
+            if (r["COUNTRY"] == country){
+              if (r["COUNTRY"] in counts){
+                counts[r["COUNTRY"]] += 1;
+                if (arr.indexOf(r[observation+"0"]) !== -1){
+                  count0 += 1
+                }
+                else if(r[observation+"0"] in bigresponses0){
+                  bigresponses0[r[observation+"0"]] +=1;
+                }
+                else {
+                  bigresponses0[r[observation+"0"]] = 1;
+                }
+                if (arr.indexOf(r[observation+"1"]) !== -1){
+                  count1 += 1
+                }
+                else if(r[observation+"1"] in bigresponses1){
+                  bigresponses1[r[observation+"1"]] +=1;
+                }
+                else {
+                  bigresponses1[r[observation+"1"]] =1;
+                }
+              } else {
+              counts[r["COUNTRY"]] = 1;
               }
-              else if(r[observation+"0"] in bigresponses0){
-                bigresponses0[r[observation+"0"]] +=1;
-              }
-              else {
-                bigresponses0[r[observation+"0"]] = 1;
-              }
-              if (arr.indexOf(r[observation+"1"]) !== -1){
-              
-              }
-              else if(r[observation+"1"] in bigresponses1){
-                bigresponses1[r[observation+"1"]] +=1;
-              }
-              else {
-                bigresponses1[r[observation+"1"]] =1;
-              }
-            } else {
-            counts[r["COUNTRY"]] = 1;
             }
           }
         })
-        return {bigresponses0, bigresponses1, counts}
+        return {bigresponses0, bigresponses1, counts, count0, count1}
       }
 
       function draw(){
@@ -168,6 +185,7 @@
         d3.select("#viz").selectAll("*").remove();
         gEnter = d3.select("#viz").append("g");
 
+        gEnter.append("g").attr("class", "texts");
         gEnter.append("g").attr("class", "bars");
         gEnter.append("g").attr("class", "y axis");
         gEnter.append("g").attr("class", "x axis");
@@ -179,6 +197,8 @@
 
         var big0 = GLOBAL.countryob['bigresponses0'];
         var big1 = GLOBAL.countryob['bigresponses1'];
+        var count0 = GLOBAL.countryob['count0'];
+        var count1 = GLOBAL.countryob['count1'];
         var counts = GLOBAL.countryob['counts'];
 
         for (var k in counts){
@@ -186,19 +206,20 @@
         }
 
         //store keys
-        var ks = ['Austria','Belgium','Bulgaria','Cyprus','Czech Republic','Denmark','Estonia','Finland','France','Germany','Great Britain/United Kingdom','Greece','Hungary','Ireland','Italy','Latvia','Lithuania','Luxembourg','Malta','Netherlands','Poland','Portugal','Romania','Slovakia','Slovenia','Spain','Sweden']//,"Don't know", 'Refused', 'None']
+        var ks = ['Austria','Belgium','Bulgaria','Cyprus','Czech Republic','Denmark','Estonia','Finland','France','Germany','Great Britain/United Kingdom','Greece','Hungary','Ireland','Italy','Latvia','Lithuania','Luxembourg','Malta','Netherlands','Poland','Portugal','Romania','Slovakia','Slovenia','Spain','Sweden']
+        //,"Don't know", 'Refused', 'None']
         //store key value pairs
         var kv = [];
         for (var k in big0) {
           //storing 
           var v = big0[k];
-          kv.push([k,v*1.0/count]);
+          kv.push([k,v*1.0/(count-count0)]);
         }
 
         for (var k in big1) {
           //storing 
           var v = big1[k];
-          kv.push([k,-v*1.0/count]);
+          kv.push([k,-v*1.0/(count-count1)]);
         }
 
         //setting up axes and scales
@@ -206,7 +227,7 @@
               .domain(ks)
               .rangeRoundBands([0,(width-margin.left-margin.right)],0.2);
         yScale = d3.scale.linear()
-              .domain([.5,-.5])
+              .domain([.75,-.75])
               .range([0,400])
               .nice();
         xAxis = d3.svg.axis().scale(xScale);
@@ -222,6 +243,16 @@
           .attr("width", 30)
           .attr("height", function(d) {return Math.abs(Y(d) - Y0()); });
 
+        var text = gEnter.select(".texts").selectAll(".text").data(kv).enter().append("text")
+          .attr("x", function(d) {return X(d)})
+          .attr("y", function(d,i) { return Y(d)})
+          .attr("dx", "1.5em")
+          .attr("dy", function(d) {return d[1] < 0 ? "1em" : "-1em" })
+          .style("text-anchor","middle")
+          .style("font-family","sans-serif")
+          .style("font-size","10px")
+          .text(function(d) {return ((Math.round(d[1]*1000))/10).toString() + "%";});
+
         var barPadding = gwidth/20;
 
         g.select(".x.axis")
@@ -236,7 +267,7 @@
             .attr("transform", "translate(0," + Y0() + ")")
             .call(xAxis.tickFormat("").tickSize(0));
 
-        g.selectAll("text")
+        g.select("g .x.axis").selectAll("text")
                 .style("text-anchor", "end")
                 .attr("dx", "-.8em")
                 .attr("dy", ".15em")
