@@ -1,40 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Social Media Data Charts</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-        <style>
+  <head>
+    <meta charset="utf-8">
+    <title>Social Media Data Charts</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+    <style>
 
-        .bar.positive {
-          fill: steelblue;
-        }
+    .active {
+      border-color: blue;
+    }
 
-        .bar.negative {
-          fill: brown;
-        }
+    .bar.positive {
+      fill: steelblue;
+    }
 
-        rect {
-          stroke: white;
-          fill-opacity: .6;
-          fill: steelblue;
-        }
+    .bar.negative {
+      fill: brown;
+    }
 
-        .axis text {
-            font: 10px sans-serif;
-        }
-        .axis path, .axis line {
-            fill: none;
-            stroke: #000;
-            shape-rendering: crispEdges;
-        }
-</style>
-    </head>
-<body>
+    rect {
+      stroke: white;
+      fill-opacity: .6;
+      fill: steelblue;
+    }
+
+    .axis text {
+        font: 10px sans-serif;
+    }
+    .axis path, .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+    h3 {
+      display: center;
+    }
+    button {
+      display: center;
+    }
+    </style>
+  </head>
+  <body>
     <h1 align="center">European country's views of each other</h1>
-    <div>
-        <svg id ="viz" height="500" width="1400" style="border: 1px solid grey"></svg>
+    <div style="display: inline-block">
+      <svg id ="viz" height="500" width="1200" style="border: 1px solid grey"></svg>
+    </div>
+    <div style="display: inline-block" >
+      <div class="selector-title">Gender:</div>
+      <select class="filter" id="select-gender" multiple=""><option value="Female">Female</option><option value="Male">Male</option></select>
+      <div class="selector-title">Age group:</div>
+      <select class="filter" id="select-age" multiple=""><option value="18-29">18-29</option><option value="30-49">30-49</option><option value="50-64">50-64</option><option value="65+">65+</option></select>
+      <!--<div class="selector-title">Base: <span id="span-base">10000</span></div>-->
     </div>
 
     <div class="btn-group" role="group">
@@ -48,191 +65,199 @@
       <button type="button" class="btn btn-default country" id="Poland" >Poland</button>
       <button type="button" class="btn btn-default country" id="Czech Republic">Czech Republic</button>
     </div>
+
     <div>
       <div class ="btn-group" role="group">
         <h3>based on this characteristic?</h3>
-
         <button type="button" class="btn btn-default observation" id="Trust">Trust</button>
         <button type="button" class="btn btn-default observation" id="Arrogance">
-        Arrogant
+        Arrogance
         </button>
         <button type="button" class="btn btn-default observation" id="Compassion">Compassion</button>
       </div>
     </div>
 
-<script type="text/javascript">
 
-    var Gsvg = d3.select("#viz");
-    var gheight = Gsvg.attr("height");
-    var gwidth = Gsvg.attr("width");
-    //var gGroup = Gsvg.append("g");
+    <script type="text/javascript">
+      var Gsvg = d3.select("#viz");
+      var gheight = Gsvg.attr("height");
+      var gwidth = Gsvg.attr("width");
 
-    var GLOBAL = {data: [], country_button: null, observation_button: null, countryob: null};
+      var GLOBAL = {data: [], country_button: null, observation_button: null, countryob: null};
 
-    window.addEventListener("load", run);
+      window.addEventListener("load", run);
 
-function run () {
-  d3.csv("EuropeanUnionfeelings.csv", function(data) {
-  GLOBAL.data = data;
-  console.log("Loaded data");
-  });
+      function run () {
+        d3.csv("EuropeanUnionfeelings.csv", function(data) {
+        GLOBAL.data = data;
+        console.log("LOADED DATA");
+        });
 
-  d3.selectAll("button.country").on("click", function(){
-    GLOBAL.country_button = this.id;
-    stateCheck();
-    console.log("CLICKED COUNTRY");
-  });
+        d3.selectAll("button.country").on("click", function(){
+          d3.selectAll("#" + GLOBAL.country_button).classed("active", false);
+          GLOBAL.country_button = this.id;
+          d3.selectAll("#" + GLOBAL.country_button).classed("active", true);
+          stateCheck();
+          console.log("CLICKED COUNTRY");
+        });
 
-  d3.selectAll("button.observation").on("click", function(){
-    GLOBAL.observation_button = this.id;
-    stateCheck();
-    console.log("CLICKED OBSERVATION");
-  });
-}
+        d3.selectAll("button.observation").on("click", function(){
+          d3.selectAll("#" + GLOBAL.observation_button).classed("active", false);
+          GLOBAL.observation_button = this.id;
+          d3.selectAll("#" + GLOBAL.observation_button).classed("active", true);
+          stateCheck();
+          console.log("CLICKED OBSERVATION");
+        });
+      }
 
-function stateCheck(){
-  if ((GLOBAL.country_button !== null) && (GLOBAL.observation_button !== null)){
-    GLOBAL.countryob = countbyColumn(GLOBAL.country_button, GLOBAL.observation_button)
-    draw();
-  }
-  console.log("STATE CHECK");
-}
-
-function countbyColumn(country,observation){
-    console.log("COUNT BY COLUMN RUN");
-    var counts = {};
-    var all = 0;
-    var bigresponses0 = {};
-    var bigresponses1 = {};
-     GLOBAL.data.forEach(function(r) {
-         if (r["COUNTRY"] == country){
-            if (r["COUNTRY"] in counts){
-                all = all + 1;
-                counts[r["COUNTRY"]] +=1;
-                if(r[observation+"0"] in bigresponses0){
-                    bigresponses0[r[observation+"0"]] +=1;
-                }
-                else {
-                    bigresponses0[r[observation+"0"]] =1;
-                }
-                if(r[observation+"1"] in bigresponses1){
-                    bigresponses1[r[observation+"1"]] +=1;
-                }
-                else{
-                    bigresponses1[r[observation+"1"]] =1;
-                }
-            }
-            else{
-                counts[r["COUNTRY"]] = 1;
-            }
+      function stateCheck(){
+        if ((GLOBAL.country_button !== null) && (GLOBAL.observation_button !== null)){
+          GLOBAL.countryob = countbyColumn(GLOBAL.country_button, GLOBAL.observation_button)
+          console.log(GLOBAL.countryob);
+          draw();
         }
-    })
-    return {bigresponses0, bigresponses1, counts}
-}
+        console.log("STATE CHECK");
+      }
 
-function draw(){
-    //setting up chart dimensions
-    var height = 500;
-    var width = 1400;
+      function countbyColumn(country,observation){
+        console.log("COUNT BY COLUMN RUN");
 
-    var margin = {top: 30, right: 10, bottom: 50, left: 50};
+        var arr = ["Don't know", "Refused", "None"];
+        var counts = {};
+        var bigresponses0 = {};
+        var bigresponses1 = {};
+        GLOBAL.data.forEach(function(r) {
+          if (r["COUNTRY"] == country){
+            if (r["COUNTRY"] in counts){
+              counts[r["COUNTRY"]] += 1;
+              if (arr.indexOf(r[observation+"0"]) !== -1){
 
-    //makes sure no extra child elements added when any button is clicked.
+              }
+              else if(r[observation+"0"] in bigresponses0){
+                bigresponses0[r[observation+"0"]] +=1;
+              }
+              else {
+                bigresponses0[r[observation+"0"]] = 1;
+              }
+              if (arr.indexOf(r[observation+"1"]) !== -1){
+              
+              }
+              else if(r[observation+"1"] in bigresponses1){
+                bigresponses1[r[observation+"1"]] +=1;
+              }
+              else {
+                bigresponses1[r[observation+"1"]] =1;
+              }
+            } else {
+            counts[r["COUNTRY"]] = 1;
+            }
+          }
+        })
+        return {bigresponses0, bigresponses1, counts}
+      }
 
-    d3.select("#viz").selectAll("*").remove();
-    gEnter = d3.select("#viz").append("g");
+      function draw(){
+        //setting up chart dimensions
+        var height = 500;
+        var width = 1200;
 
-    gEnter.append("g").attr("class", "bars");
-    gEnter.append("g").attr("class", "y axis");
-    gEnter.append("g").attr("class", "x axis");
-    gEnter.append("g").attr("class", "x axis zero");
+        var margin = {top: 30, right: 10, bottom: 50, left: 50};
 
-     // Update the inner dimensions.
-    var g = gEnter
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        //makes sure no extra child elements added when any button is clicked.
 
-    var big0 = GLOBAL.countryob['bigresponses0'];
-    var big1 = GLOBAL.countryob['bigresponses1'];
-    var counts = GLOBAL.countryob['counts'];
-    console.log(GLOBAL.country_button);
-    for (var k in counts){
-      var count = counts[k];
-    }
+        d3.select("#viz").selectAll("*").remove();
+        gEnter = d3.select("#viz").append("g");
 
-    //store keys
-    var ks = ['Austria','Belgium','Bulgaria','Cyprus','Czech Republic','Denmark','Estonia','Finland','France','Germany','Great Britain/United Kingdom','Greece','Hungary','Ireland','Italy','Latvia','Lithuania','Luxembourg','Malta','Netherlands','Poland','Portugal','Romania','Slovakia','Slovenia','Spain','Sweden',"Don't know", 'Refused', 'None']
-    //store key value pairs
-    var kv = [];
-    for (var k in big0) {
-      //storing 
-      var v = big0[k];
-      kv.push([k,v*1.0/count]);
-    }
+        gEnter.append("g").attr("class", "bars");
+        gEnter.append("g").attr("class", "y axis");
+        gEnter.append("g").attr("class", "x axis");
+        gEnter.append("g").attr("class", "x axis zero");
 
-    for (var k in big1) {
-      //storing 
-      var v = big1[k];
-      kv.push([k,-v*1.0/count]);
-    }
+        // Update the inner dimensions.
+        var g = gEnter
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    //setting up axes and scales
-    xScale = d3.scale.ordinal()
-          .domain(ks)
-          .rangeRoundBands([0,(width-margin.left-margin.right)],0.2);
-    yScale = d3.scale.linear()
-          .domain([.3,-.3])
-          .range([0,400])
-          .nice();
-    xAxis = d3.svg.axis().scale(xScale);
-    yAxis = d3.svg.axis().scale(yScale).orient("left");
+        var big0 = GLOBAL.countryob['bigresponses0'];
+        var big1 = GLOBAL.countryob['bigresponses1'];
+        var counts = GLOBAL.countryob['counts'];
 
-    var bar = gEnter.select(".bars").selectAll(".rect").data(kv).enter().append("rect")
-      .transition()
-      .duration(3000)
-      .ease("linear")
-      .attr("class", function(d, i) { return d[1] < 0 ? "bar negative" : "bar positive"; })
-      .attr("x", function(d) {return X(d)})
-      .attr("y", function(d,i) { return d[1] < 0 ? Y0() : Y(d);})
-      .attr("width", 30)
-      .attr("height", function(d) {return Math.abs(Y(d) - Y0()); });
+        for (var k in counts){
+          var count = counts[k];
+        }
 
-    var barPadding = gwidth/20;
+        //store keys
+        var ks = ['Austria','Belgium','Bulgaria','Cyprus','Czech Republic','Denmark','Estonia','Finland','France','Germany','Great Britain/United Kingdom','Greece','Hungary','Ireland','Italy','Latvia','Lithuania','Luxembourg','Malta','Netherlands','Poland','Portugal','Romania','Slovakia','Slovenia','Spain','Sweden']//,"Don't know", 'Refused', 'None']
+        //store key value pairs
+        var kv = [];
+        for (var k in big0) {
+          //storing 
+          var v = big0[k];
+          kv.push([k,v*1.0/count]);
+        }
 
-    g.select(".x.axis")
-      .attr("transform", "translate(0,400)")
-      .call(xAxis.orient("bottom"));
+        for (var k in big1) {
+          //storing 
+          var v = big1[k];
+          kv.push([k,-v*1.0/count]);
+        }
 
-     g.select(".y.axis")
-      .attr("transform", "translate(0,0)")
-      .call(yAxis.orient("left"));
+        //setting up axes and scales
+        xScale = d3.scale.ordinal()
+              .domain(ks)
+              .rangeRoundBands([0,(width-margin.left-margin.right)],0.2);
+        yScale = d3.scale.linear()
+              .domain([.5,-.5])
+              .range([0,400])
+              .nice();
+        xAxis = d3.svg.axis().scale(xScale);
+        yAxis = d3.svg.axis().scale(yScale).orient("left");
 
-    g.select(".x.axis.zero")
-        .attr("transform", "translate(0," + Y0() + ")")
-        .call(xAxis.tickFormat("").tickSize(0));
+        var bar = gEnter.select(".bars").selectAll(".rect").data(kv).enter().append("rect")
+          .transition()
+          .duration(3000)
+          .ease("linear")
+          .attr("class", function(d, i) { return d[1] < 0 ? "bar negative" : "bar positive"; })
+          .attr("x", function(d) {return X(d)})
+          .attr("y", function(d,i) { return d[1] < 0 ? Y0() : Y(d);})
+          .attr("width", 30)
+          .attr("height", function(d) {return Math.abs(Y(d) - Y0()); });
 
-    g.selectAll("text")
-            .style("text-anchor", "end")
-            .attr("dx", "-.8em")
-            .attr("dy", ".15em")
-            .attr("transform", function(d){
-              return "rotate(-15)"
-            });
+        var barPadding = gwidth/20;
 
-    bar.selectAll(".rect").transition().duration(100);
+        g.select(".x.axis")
+          .attr("transform", "translate(0,400)")
+          .call(xAxis.orient("bottom"));
 
-    function X(d) {
-      return xScale(d[0]);
-    }
+         g.select(".y.axis")
+          .attr("transform", "translate(0,0)")
+          .call(yAxis.orient("left"));
 
-    function Y(d) {
-      return yScale(d[1]);
-    }
+        g.select(".x.axis.zero")
+            .attr("transform", "translate(0," + Y0() + ")")
+            .call(xAxis.tickFormat("").tickSize(0));
 
-    function Y0() {
-      return yScale(0);
-    }
-}
+        g.selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em")
+                .attr("transform", function(d){
+                  return "rotate(-15)"
+                });
 
-</script>
-</body>
+        //bar.selectAll(".rect").transition().duration(100);
+
+        function X(d) {
+          return xScale(d[0]);
+        }
+
+        function Y(d) {
+          return yScale(d[1]);
+        }
+
+        function Y0() {
+          return yScale(0);
+        }
+      } 
+    </script>
+  </body>
 </html>
